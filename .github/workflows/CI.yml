@@ -1,0 +1,33 @@
+name: "Flask Python Web App"
+
+on:
+  push:
+    branches:
+        - master
+        - main
+        
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: "Clone repo"
+        uses: actions/checkout@v4
+
+      - name: "Setup Python Environment"
+        uses: actions/setup-python@v5
+
+      - name: "Install Dependencies"
+        run: |
+          pip install flask
+          pip install flake8
+
+      - name: "List Dependencies"
+        run: pip list
+
+      - name: "Lint Test"
+        run: flake8 app.py
+
+      - name: "Run test"
+        run: python test_app.py
