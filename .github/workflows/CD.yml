@@ -1,0 +1,29 @@
+name: "CD Pipeline"
+
+on:
+  workflow_run:
+    workflows: "Flask Python Web App"
+    types:
+        - completed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: deployment
+
+    steps:
+      - name: "setup vercel CLI"
+        run: npm install -g vercel
+
+      - name: "Download Build files"
+        uses: actions/download-artifact@v4
+        with:
+          name: build
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+
+      - name: "Deploy to Vercel"
+        run: vercel --prod --token=${{ secrets.PYTHON_TOKEN }} --confirm --name=cicdproject
+        env:
+          VERCEL_TOKEN: ${{ secrets.PYTHON_TOKEN }}
+
